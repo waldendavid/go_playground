@@ -1,15 +1,21 @@
 package main
 
 import (
-	"context"
-	"fmt"
+	"log"
+	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/waldendavid/restapi/pkg/library"
 )
 
 func main() {
 	libService := library.NewService()
-	fmt.Println(libService.GetBooks(context.Background()))
+	libHandler := library.NewHandler(libService)
+
+	r := mux.NewRouter()
+
+	r.HandleFunc("/api/books", libHandler.GetBooks()).Methods("GET")
+	log.Fatal(http.ListenAndServe(":8000", r))
 }
 
 // import (

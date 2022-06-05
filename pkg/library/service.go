@@ -32,5 +32,8 @@ type service struct {
 }
 
 func (s *service) GetBooks(ctx context.Context) ([]Book, error) {
-	return nil, nil
+	var books []Book
+	books = append(books, Book{ID: "1", Isbn: "44778854", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}})
+	books = append(books, Book{ID: "2", Isbn: "3987654", Title: "Book Two", Author: &Author{Firstname: "Steve", Lastname: "Smith"}})
+	return books, nil
 }

@@ -16,9 +16,12 @@ func Test_service_GetBooks(t *testing.T) {
 	}{
 
 		{
-			name:    "abc",
-			s:       &service{},
-			want:    nil,
+			name: "abc",
+			s:    &service{},
+			want: []Book{
+				{ID: "1", Isbn: "44778854", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}},
+				{ID: "2", Isbn: "3987654", Title: "Book Two", Author: &Author{Firstname: "Steve", Lastname: "Smith"}},
+			},
 			wantErr: false,
 		},
 	}
