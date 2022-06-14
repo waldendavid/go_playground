@@ -46,8 +46,7 @@ func (h *handler) GetBooks() http.HandlerFunc {
 // skąd się bierze id? -> z Url : przechowywany w params["id"]
 func (h *handler) GetBook() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// books, err := h.service.GetBooks(r.Context())
-		// w.Header().Set("Content-Type", "application/json")
+
 		fmt.Println("Dupaaa69")
 		params := mux.Vars(r)
 		id := params["id"]
@@ -58,7 +57,6 @@ func (h *handler) GetBook() http.HandlerFunc {
 		}
 		// respEncoder := json.NewEncoder(w)
 		// respEncoder.Encode(b)
-
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(b)
 
