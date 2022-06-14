@@ -20,6 +20,6 @@ func Provisions(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("id is missing in parameters")
 	}
 	fmt.Println(`id := `, id)
-	//call http://localhost:8080/provisions/someId in your browser
+	//call http://localhost:8080/provisions/someId in your browser dupa
 	//Output : id := someId
 }
