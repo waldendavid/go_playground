@@ -53,8 +53,6 @@ func (h *handler) GetBook() http.HandlerFunc {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		// respEncoder := json.NewEncoder(w)
-		// respEncoder.Encode(b)
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(b)
 
