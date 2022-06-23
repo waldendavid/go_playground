@@ -2,7 +2,6 @@ package library
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -47,7 +46,6 @@ func (h *handler) GetBooks() http.HandlerFunc {
 func (h *handler) GetBook() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		fmt.Println("Dupaaa69")
 		params := mux.Vars(r)
 		id := params["id"]
 		b, err := h.service.GetBook(r.Context(), id)

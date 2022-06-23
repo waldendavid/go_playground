@@ -61,6 +61,7 @@ func (s *service) CreateBook(ctx context.Context, book Book) (Book, error) {
 	return book, nil
 }
 
+// TODO add errors
 func (s *service) UpdateBook(ctx context.Context, book Book, id string) (Book, error) {
 	for i := range s.books {
 		if s.books[i].ID == id {
