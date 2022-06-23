@@ -12,11 +12,6 @@ func NewHandler(service Library) Handler {
 	return &handler{service: service}
 }
 
-/*
-TODO Handler ma zaiplementowane metody, ale nie ma storingu danych
-Ciągle wywoływanie z GetBooks tworzy nowego slice i operacje na nowym??
-
-*/
 type Handler interface {
 	GetBooks() http.HandlerFunc
 	GetBook() http.HandlerFunc
@@ -42,7 +37,6 @@ func (h *handler) GetBooks() http.HandlerFunc {
 	}
 }
 
-// skąd się bierze id? -> z Url : przechowywany w params["id"]
 func (h *handler) GetBook() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 

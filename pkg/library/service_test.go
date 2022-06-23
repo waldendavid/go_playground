@@ -17,7 +17,10 @@ func Test_service_GetBooks(t *testing.T) {
 
 		{
 			name: "Saving",
-			s:    &service{},
+			s: &service{books: []Book{
+				{ID: "1", Isbn: "44778854", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}},
+				{ID: "2", Isbn: "3987654", Title: "Book Two", Author: &Author{Firstname: "Steve", Lastname: "Smith"}},
+			}},
 			want: []Book{
 				{ID: "1", Isbn: "44778854", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}},
 				{ID: "2", Isbn: "3987654", Title: "Book Two", Author: &Author{Firstname: "Steve", Lastname: "Smith"}},
@@ -87,8 +90,11 @@ func Test_service_GetBook(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "getting one book",
-			s:       &service{},
+			name: "getting one book",
+			s: &service{books: []Book{
+				{ID: "1", Isbn: "44778854", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}},
+				{ID: "2", Isbn: "3987654", Title: "Book Two", Author: &Author{Firstname: "Steve", Lastname: "Smith"}},
+			}},
 			args:    args{ctx: context.Background(), id: "1"},
 			want:    Book{ID: "1", Isbn: "44778854", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}},
 			wantErr: false,
@@ -140,6 +146,12 @@ func Test_service_CreateBook(t *testing.T) {
 		ctx  context.Context
 		book Book
 	}
+	type result struct {
+		Isbn      string
+		Title     string
+		Firstname string
+		Lastname  string
+	}
 	tests := []struct {
 		name    string
 		s       *service
@@ -151,7 +163,7 @@ func Test_service_CreateBook(t *testing.T) {
 			name:    "creating one book",
 			s:       &service{},
 			args:    args{ctx: context.Background(), book: Book{Isbn: "987654321", Title: "Posted Book", Author: &Author{Firstname: "Creator", Lastname: "Poster"}}},
-			want:    Book{Isbn: "987654321", Title: "Posted Book", Author: &Author{Firstname: "Creator", Lastname: "Poster"}},
+			want:    Book{ID: "dupa", Isbn: "987654321", Title: "Posted Book", Author: &Author{Firstname: "Creator", Lastname: "Poster"}},
 			wantErr: false,
 		},
 	}

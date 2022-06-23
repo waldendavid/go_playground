@@ -24,8 +24,6 @@ type Library interface {
 	GetBook(ctx context.Context, id string) (Book, error)
 	CreateBook(ctx context.Context, book Book) (Book, error)
 	UpdateBook(ctx context.Context, book Book, id string) (Book, error)
-	//Co zwraca delete? https://stackoverflow.com/questions/25970523/restful-what-should-a-delete-response-body-contain
-	//204? W kodzie nic?
 	DeleteBook(ctx context.Context, id string) error
 }
 
@@ -40,7 +38,6 @@ type service struct {
 	books []Book
 }
 
-//jak sprawdzić usage?
 func (s *service) GetBooks(ctx context.Context) ([]Book, error) {
 	return s.books, nil
 }
