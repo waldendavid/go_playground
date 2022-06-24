@@ -146,12 +146,6 @@ func Test_service_CreateBook(t *testing.T) {
 		ctx  context.Context
 		book Book
 	}
-	type result struct {
-		Isbn      string
-		Title     string
-		Firstname string
-		Lastname  string
-	}
 	tests := []struct {
 		name    string
 		s       *service
@@ -163,7 +157,7 @@ func Test_service_CreateBook(t *testing.T) {
 			name:    "creating one book",
 			s:       &service{},
 			args:    args{ctx: context.Background(), book: Book{Isbn: "987654321", Title: "Posted Book", Author: &Author{Firstname: "Creator", Lastname: "Poster"}}},
-			want:    Book{ID: "dupa", Isbn: "987654321", Title: "Posted Book", Author: &Author{Firstname: "Creator", Lastname: "Poster"}},
+			want:    Book{Isbn: "987654321", Title: "Posted Book", Author: &Author{Firstname: "Creator", Lastname: "Poster"}},
 			wantErr: false,
 		},
 	}
@@ -173,6 +167,9 @@ func Test_service_CreateBook(t *testing.T) {
 			if (err != nil) != tt.wantErr {
 				t.Errorf("service.CreateBook() error = %v, wantErr %v", err, tt.wantErr)
 				return
+			}
+			if got.ID != "" {
+				tt.want.ID = got.ID
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("service.CreateBook() = %v, want %v", got, tt.want)
