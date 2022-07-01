@@ -2,6 +2,7 @@ package library
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -12,11 +13,6 @@ func NewHandler(service Library) Handler {
 	return &handler{service: service}
 }
 
-/*
-TODO Handler ma zaiplementowane metody, ale nie ma storingu danych
-Ciągle wywoływanie z GetBooks tworzy nowego slice i operacje na nowym??
-
-*/
 type Handler interface {
 	GetBooks() http.HandlerFunc
 	GetBook() http.HandlerFunc
@@ -31,6 +27,7 @@ type handler struct {
 
 func (h *handler) GetBooks() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Getting books")
 		books, err := h.service.GetBooks(r.Context())
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(books)
@@ -42,7 +39,6 @@ func (h *handler) GetBooks() http.HandlerFunc {
 	}
 }
 
-// skąd się bierze id? -> z Url : przechowywany w params["id"]
 func (h *handler) GetBook() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
