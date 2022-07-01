@@ -1,15 +1,24 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/waldendavid/restapi/pkg/library"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func main() {
-	libService := library.NewService()
+	dsn := "host=localhost user=postgres password=secret dbname=postgres port=5432 sslmode=disable"
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	libService := library.NewService(db)
 	libHandler := library.NewHandler(libService)
 
 	r := mux.NewRouter()
@@ -25,7 +34,7 @@ func main() {
 		Handler: r,
 		Addr:    "127.0.0.1:8000",
 	}
-
+	fmt.Println("Running")
 	log.Fatal(srv.ListenAndServe())
 
 }
