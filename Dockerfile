@@ -11,12 +11,16 @@ WORKDIR /app
 # COPY go.mod ./
 # COPY go.sum ./
 # Go modules (current application) will be installed into a directory inside the image.
-# Copy our source code into the image
+# Copy our source code into the image - from current location ('.') to location in container ('./')
+# default location: /app
+
 COPY . ./
 
+# 
 RUN go mod download
 
-## compile an application, result: static application binary named docker-gs-ping
+## compile an application, result: static application binary named docker-gs-ping in location
+# with main.go
 RUN go build -o library cmd/library/main.go
 
 EXPOSE 8000

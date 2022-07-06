@@ -34,18 +34,15 @@ type Author struct {
 }
 
 func NewService(db *gorm.DB) Library {
+	// Migrate the schema: Author and Book
 	db.AutoMigrate(&Author{})
 	db.AutoMigrate(&Book{})
 	db.Create(&Book{Isbn: "44778854", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}})
 	db.Create(&Book{Isbn: "3987654", Title: "Book Two", Author: &Author{Firstname: "Steve", Lastname: "Smith"}})
-	// var books []Book
-	// books = append(books, Book{ID: "1", Isbn: "44778854", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}})
-	// books = append(books, Book{ID: "2", Isbn: "3987654", Title: "Book Two", Author: &Author{Firstname: "Steve", Lastname: "Smith"}})
 	return &service{db: db}
 }
 
 type service struct {
-	//	books []Book
 	db *gorm.DB
 }
 
@@ -63,15 +60,8 @@ func (s *service) GetBook(ctx context.Context, id string) (Book, error) {
 	book := Book{}
 	result := s.db.First(&book, id)
 	if result.Error != nil {
-
 		return Book{}, fmt.Errorf("GetBook: %v", result.Error)
 	}
-
-	// for _, b := range s.books {
-	// 	if b.ID == id {
-	// 		return b, nil
-	// 	}
-	// }
 
 	return book, nil
 }
@@ -85,7 +75,6 @@ func (s *service) CreateBook(ctx context.Context, book Book) (Book, error) {
 	return book, nil
 }
 
-// TODO add errors
 func (s *service) UpdateBook(ctx context.Context, b Book, id string) (Book, error) {
 	book := Book{}
 	result := s.db.First(&book, id)
@@ -113,5 +102,3 @@ func (s *service) DeleteBook(ctx context.Context, id string) error {
 	}
 	return nil
 }
-
-//https://tutorialedge.net/golang/creating-restful-api-with-golang/
