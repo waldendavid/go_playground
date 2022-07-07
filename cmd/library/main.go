@@ -7,18 +7,16 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/waldendavid/restapi/pkg/library"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 func main() {
-	dsn := "host=localhost user=postgres password=secret dbname=postgres port=5432 sslmode=disable"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	libService := library.NewService(db)
+	// dsn := "host=localhost user=postgres password=secret dbname=postgres port=5432 sslmode=disable"
+	// db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	libRepository := library.NewRepositoryGorm()
+	libService := library.NewService(libRepository)
 	libHandler := library.NewHandler(libService)
 
 	r := mux.NewRouter()
