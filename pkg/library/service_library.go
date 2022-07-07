@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// todo
 type BookDTO struct {
 	ID     string  `json:"id"`
 	Isbn   string  `json:"isbn"`
@@ -97,10 +98,11 @@ func (s *service) UpdateBook(ctx context.Context, b Book, id string) (Book, erro
 }
 
 func (s *service) DeleteBook(ctx context.Context, id string) error {
-	result := s.repo.DeleteBook(ctx, id)
-	if result.Error != nil {
+	// result :=
+	s.repo.DeleteBook(ctx, id)
+	// if result.Error != nil {
 
-		return fmt.Errorf("DeleteBook: %v", result.Error)
-	}
+	// 	return fmt.Errorf("DeleteBook: %v", result.Error)
+	// }
 	return nil
 }
