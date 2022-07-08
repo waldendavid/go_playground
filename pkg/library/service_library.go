@@ -2,7 +2,6 @@ package library
 
 import (
 	"context"
-	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -49,60 +48,63 @@ type service struct {
 }
 
 func (s *service) GetBooks(ctx context.Context) ([]Book, error) {
-	var books []Book
 	// todo should repo.getBooks have books, err? err is checked in repository
-	books, err := s.repo.GetBooks(ctx)
-	if err != nil {
+	// books, err := s.repo.GetBooks(ctx)
+	// if err != nil {
 
-		return nil, fmt.Errorf("GetBooks: %v", err)
-	}
-	return books, nil
+	// 	return nil, fmt.Errorf("GetBooks: %v", err)
+	// }
+	// return books, nil
+
+	return s.repo.GetBooks(ctx)
 }
 
 func (s *service) GetBook(ctx context.Context, id string) (Book, error) {
-	book := Book{}
-	book, err := s.repo.GetBook(ctx, id)
-	if err != nil {
-		return Book{}, fmt.Errorf("GetBook: %v", err)
-	}
+	// book, err := s.repo.GetBook(ctx, id)
+	// if err != nil {
+	// 	return Book{}, fmt.Errorf("GetBook: %v", err)
+	// }
 
-	return book, nil
+	// return book, nil
+	return s.repo.GetBook(ctx, id)
 }
 
 func (s *service) CreateBook(ctx context.Context, book Book) (Book, error) {
-	book, err := s.repo.CreateBook(ctx, book)
-	if err != nil {
+	// book, err := s.repo.CreateBook(ctx, book)
+	// if err != nil {
 
-		return Book{}, fmt.Errorf("CreateBook: %v", err)
-	}
-	return book, nil
+	// 	return Book{}, fmt.Errorf("CreateBook: %v", err)
+	// }
+	// return book, nil
+	return s.repo.CreateBook(ctx, book)
 }
 
 func (s *service) UpdateBook(ctx context.Context, b Book, id string) (Book, error) {
-	book := Book{}
-	book, err := s.repo.UpdateBook(ctx, b, id)
-	if err != nil {
+	// book, err := s.repo.UpdateBook(ctx, b, id)
+	// if err != nil {
 
-		return Book{}, fmt.Errorf("UpdateBook: %v", err)
-	}
-
-	// book.Isbn = b.Isbn
-	// book.Title = b.Title
-	// //todo itd....
-	// book = s.repo.(&book) //variable shadowing
-	// if result.Error != nil {
-
-	// 	return Book{}, fmt.Errorf("UpdateBook: %v", result.Error)
+	// 	return Book{}, fmt.Errorf("UpdateBook: %v", err)
 	// }
-	return book, nil
+
+	// // book.Isbn = b.Isbn
+	// // book.Title = b.Title
+	// // //todo itd....
+	// // book = s.repo.(&book) //variable shadowing
+	// // if result.Error != nil {
+
+	// // 	return Book{}, fmt.Errorf("UpdateBook: %v", result.Error)
+	// // }
+
+	// return book, nil
+	return s.repo.UpdateBook(ctx, b, id)
 }
 
 func (s *service) DeleteBook(ctx context.Context, id string) error {
 	// result :=
-	s.repo.DeleteBook(ctx, id)
+	// s.repo.DeleteBook(ctx, id)
 	// if result.Error != nil {
 
 	// 	return fmt.Errorf("DeleteBook: %v", result.Error)
 	// }
-	return nil
+	return s.repo.DeleteBook(ctx, id)
 }
