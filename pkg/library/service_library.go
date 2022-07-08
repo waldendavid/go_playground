@@ -33,7 +33,7 @@ type Author struct {
 	BookID    uint
 }
 
-func NewService(repo Repository) Service {
+func NewServiceLibrary(repo Repository) Service {
 	// Migrate the schema: Author and Book
 	// db.AutoMigrate(&Author{})
 	// db.AutoMigrate(&Book{})

@@ -16,7 +16,7 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 	libRepository := library.NewRepositoryGorm()
-	libService := library.NewService(libRepository)
+	libService := library.NewServiceLibrary(libRepository)
 	libHandler := library.NewHandler(libService)
 
 	r := mux.NewRouter()
