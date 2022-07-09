@@ -53,3 +53,46 @@ func Test_service_GetBooks(t *testing.T) {
 		})
 	}
 }
+
+func Test_service_GetBook(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	m := NewMockRepository(ctrl)
+	book := Book{Isbn: "44778854", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}}
+
+	m.
+		EXPECT().
+		GetBook(context.Background(), gomock.Any()).
+		Return(book, nil)
+
+	type args struct {
+		ctx context.Context
+		id  string
+	}
+	tests := []struct {
+		name    string
+		s       *service
+		args    args
+		want    Book
+		wantErr bool
+	}{
+		{
+			name:    "Getting book",
+			s:       &service{repo: m},
+			args:    args{ctx: context.Background()},
+			want:    book,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := tt.s.GetBook(tt.args.ctx, tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("service.GetBook() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("service.GetBook() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
