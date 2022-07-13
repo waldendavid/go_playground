@@ -2,7 +2,10 @@ package library
 
 import (
 	"context"
+	"fmt"
+	"math/rand"
 	"reflect"
+	"strconv"
 	"testing"
 
 	gomock "github.com/golang/mock/gomock"
@@ -55,37 +58,61 @@ func Test_service_GetBooks(t *testing.T) {
 }
 
 func Test_service_GetBook(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	m := NewMockRepository(ctrl)
+	ctx := context.Background()
 	book := Book{Isbn: "44778854", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}}
 
-	m.
-		EXPECT().
-		GetBook(context.Background(), gomock.Any()).
-		Return(book, nil)
-
+	type mocks struct {
+		repository func(m *MockRepository)
+	}
 	type args struct {
-		ctx context.Context
-		id  string
+		id string
 	}
 	tests := []struct {
-		name    string
-		s       *service
+		name string
+		// s       *service
+		mocks   mocks
 		args    args
 		want    Book
 		wantErr bool
 	}{
 		{
-			name:    "Getting book",
-			s:       &service{repo: m},
-			args:    args{ctx: context.Background(), id: "5"},
+			name: "Getting book",
+			mocks: mocks{repository: func(m *MockRepository) {
+				m.EXPECT().GetBook(context.Background(), "5").
+					Return(Book{Isbn: "44778854", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}}, nil)
+			}},
+			args:    args{id: "5"},
 			want:    book,
 			wantErr: false,
+		},
+		{
+			name: "Getting book",
+			mocks: mocks{repository: func(m *MockRepository) {
+				m.EXPECT().GetBook(context.Background(), "6").
+					Return(book, nil)
+			}},
+			args:    args{id: "6"},
+			want:    book,
+			wantErr: false,
+		},
+		{
+			name: "Getting book",
+			mocks: mocks{repository: func(m *MockRepository) {
+				m.EXPECT().GetBook(context.Background(), "5").
+					Return(Book{}, fmt.Errorf("Failed"))
+			}},
+			args:    args{id: "5"},
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.s.GetBook(tt.args.ctx, tt.args.id)
+			ctrl := gomock.NewController(t)
+			m := NewMockRepository(ctrl)
+			tt.mocks.repository(m)
+			s := &service{repo: m}
+
+			got, err := s.GetBook(ctx, tt.args.id)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("service.GetBook() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -143,9 +170,9 @@ func Test_service_CreateBook(t *testing.T) {
 func Test_service_UpdateBook(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	m := NewMockRepository(ctrl)
-	// todo where can i put magic numbers?
-	bookInput := Book{Isbn: "44778854", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}}
-	bookOutput := Book{Isbn: "123", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}}
+	id := strconv.Itoa(rand.Int())
+	bookInput := Book{Isbn: id, Title: "BookIn", Author: &Author{Firstname: "John", Lastname: "Doe"}}
+	bookOutput := Book{Isbn: id, Title: "BookOut", Author: &Author{Firstname: "John", Lastname: "Doe"}}
 
 	m.
 		EXPECT().

@@ -3,6 +3,7 @@ package library
 import (
 	"context"
 
+	"github.com/waldendavid/restapi/pkg/openlibrary"
 	"gorm.io/gorm"
 )
 
@@ -33,12 +34,16 @@ type Author struct {
 	BookID    uint
 }
 
-func NewServiceLibrary(repo Repository) Service {
-	return &service{repo: repo}
+func NewService(repo Repository, olClient openlibrary.Client) Service {
+	return &service{
+		repo:     repo,
+		olClient: olClient,
+	}
 }
 
 type service struct {
-	repo Repository
+	repo     Repository
+	olClient openlibrary.Client
 }
 
 func (s *service) GetBooks(ctx context.Context) ([]Book, error) {
@@ -50,6 +55,10 @@ func (s *service) GetBook(ctx context.Context, id string) (Book, error) {
 }
 
 func (s *service) CreateBook(ctx context.Context, book Book) (Book, error) {
+	res := s.olClient.Search(ctx, openlibrary.SearchRequest{Title: book.Title})
+	if book.Title ==  {
+		
+	}
 	return s.repo.CreateBook(ctx, book)
 }
 
