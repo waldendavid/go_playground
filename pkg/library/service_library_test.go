@@ -11,6 +11,7 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
+//todo - correct tests according to GetBook 120722
 func Test_service_GetBooks(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	m := NewMockRepository(ctrl)

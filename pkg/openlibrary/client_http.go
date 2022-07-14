@@ -19,8 +19,8 @@ func NewHttpClient(client *http.Client, url string) *HttpClient {
 }
 func (hc *HttpClient) Search(ctx context.Context, sreq SearchRequest) (SearchResponse, error) {
 	var url string
-	if sreq.Author != "" {
-		url = fmt.Sprintf("%s/search.json?author=%s", hc.url, sreq.Author)
+	if sreq.Title != "" {
+		url = fmt.Sprintf("%s/search.json?author=%s", hc.url, sreq.Title)
 	}
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {

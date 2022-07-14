@@ -55,10 +55,11 @@ func (s *service) GetBook(ctx context.Context, id string) (Book, error) {
 }
 
 func (s *service) CreateBook(ctx context.Context, book Book) (Book, error) {
-	res := s.olClient.Search(ctx, openlibrary.SearchRequest{Title: book.Title})
-	if book.Title ==  {
-		
-	}
+	// todo tutaj get po tytule i sprawdzenie czy jest w bazie
+	// res, err := s.olClient.Search(ctx, openlibrary.SearchRequest{Title: book.Title})
+	// if book.Title == "" {
+
+	// }
 	return s.repo.CreateBook(ctx, book)
 }
 
