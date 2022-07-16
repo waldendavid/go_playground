@@ -46,6 +46,16 @@ func (repo *repository) GetBook(ctx context.Context, id string) (Book, error) {
 	return book, nil
 }
 
+func (repo *repository) GetBookByTitle(ctx context.Context, title string) (Book, error) {
+	book := Book{}
+	result := repo.db.Where("title = ?", title).First(&book)
+	if result.Error != nil {
+		return Book{}, fmt.Errorf("GetBook: %v", result.Error)
+	}
+
+	return book, nil
+}
+
 func (repo *repository) CreateBook(ctx context.Context, book Book) (Book, error) {
 	result := repo.db.Create(&book)
 	if result.Error != nil {
@@ -65,7 +75,7 @@ func (repo *repository) UpdateBook(ctx context.Context, b Book, id string) (Book
 
 	book.Isbn = b.Isbn
 	book.Title = b.Title
-	//todo itd....
+	//TODO itd....
 	result = repo.db.Save(&book) //variable shadowing
 	if result.Error != nil {
 

@@ -2,6 +2,7 @@ package library
 
 import (
 	"context"
+	"fmt"
 
 	//_ "sync"
 
@@ -10,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// todo
+// TODO
 type BookDTO struct {
 	ID     string  `json:"id"`
 	Isbn   string  `json:"isbn"`
@@ -61,12 +62,27 @@ func (s *service) GetBook(ctx context.Context, id string) (Book, error) {
 }
 
 func (s *service) CreateBook(ctx context.Context, book Book) (Book, error) {
-	// todo tutaj get po tytule i sprawdzenie czy jest w bazie
+	// tutaj get po tytule i sprawdzenie czy jest w bazie
 	// res, err := s.olClient.Search(ctx, openlibrary.SearchRequest{Title: book.Title})
+	// TODO
 	// if book.Title == "" {
-
 	// }
-	return s.repo.CreateBook(ctx, book)
+	cb, inCache := s.cache.Get(book.Title)
+	if inCache {
+		return cb.(Book), nil
+	}
+	dbb, err := s.repo.GetBookByTitle(ctx, book.Title)
+	if err == nil {
+		return dbb, nil
+	}
+	clires, err := s.olClient.Search(ctx, openlibrary.SearchRequest{Title: book.Title})
+	if err == nil {
+		//TODO book zgodnie z danymi z res
+		var b Book
+		b.Title = clires.Docs[len(clires.Docs)-1].Title
+		return s.repo.CreateBook(ctx, b)
+	}
+	return Book{}, fmt.Errorf("GetBook: %v", err)
 }
 
 func (s *service) UpdateBook(ctx context.Context, b Book, id string) (Book, error) {

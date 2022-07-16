@@ -30,7 +30,7 @@ func WithThreaded() func(*MemoryCache) {
 
 func (mc *MemoryCache) Get(k string) (any, bool) {
 	if mc.threaded {
-		//todo
+		//TODO
 		mc.lock.RLock()
 		defer mc.lock.RUnlock()
 	}
@@ -43,7 +43,7 @@ func (mc *MemoryCache) Get(k string) (any, bool) {
 
 func (mc *MemoryCache) Set(k string, v any) {
 	if mc.threaded {
-		//todo
+		//TODO
 		mc.lock.Lock()
 		defer mc.lock.Unlock()
 	}
