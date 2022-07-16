@@ -64,7 +64,7 @@ func (s *service) GetBook(ctx context.Context, id string) (Book, error) {
 func (s *service) CreateBook(ctx context.Context, book Book) (Book, error) {
 	// tutaj get po tytule i sprawdzenie czy jest w bazie
 	// res, err := s.olClient.Search(ctx, openlibrary.SearchRequest{Title: book.Title})
-	// TODO
+	// TODO zmienić kolejność, createBook na koniec wraz z zapisanie do cachea
 	// if book.Title == "" {
 	// }
 	cb, inCache := s.cache.Get(book.Title)
@@ -73,6 +73,7 @@ func (s *service) CreateBook(ctx context.Context, book Book) (Book, error) {
 	}
 	dbb, err := s.repo.GetBookByTitle(ctx, book.Title)
 	if err == nil {
+		s.cache.Set(book.Title, dbb)
 		return dbb, nil
 	}
 	clires, err := s.olClient.Search(ctx, openlibrary.SearchRequest{Title: book.Title})
@@ -80,6 +81,7 @@ func (s *service) CreateBook(ctx context.Context, book Book) (Book, error) {
 		//TODO book zgodnie z danymi z res
 		var b Book
 		b.Title = clires.Docs[len(clires.Docs)-1].Title
+		s.cache.Set(book.Title, b)
 		return s.repo.CreateBook(ctx, b)
 	}
 	return Book{}, fmt.Errorf("GetBook: %v", err)
