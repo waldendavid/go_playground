@@ -3,7 +3,7 @@ package library
 import (
 	"context"
 
-	_ "sync"
+	//_ "sync"
 
 	"github.com/waldendavid/restapi/pkg/cache"
 	"github.com/waldendavid/restapi/pkg/openlibrary"
@@ -37,7 +37,7 @@ type Author struct {
 	BookID    uint
 }
 
-func NewService(repo Repository, olClient openlibrary.Client, cache cache.MemoryCache) Service {
+func NewService(repo Repository, olClient openlibrary.Client, cache cache.Cache) Service {
 	return &service{
 		repo:     repo,
 		olClient: olClient,
@@ -48,7 +48,7 @@ func NewService(repo Repository, olClient openlibrary.Client, cache cache.Memory
 type service struct {
 	repo     Repository
 	olClient openlibrary.Client
-	cache    cache.MemoryCache
+	cache    cache.Cache
 }
 
 func (s *service) GetBooks(ctx context.Context) ([]Book, error) {
@@ -56,6 +56,7 @@ func (s *service) GetBooks(ctx context.Context) ([]Book, error) {
 }
 
 func (s *service) GetBook(ctx context.Context, id string) (Book, error) {
+
 	return s.repo.GetBook(ctx, id)
 }
 

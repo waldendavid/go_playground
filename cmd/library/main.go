@@ -13,7 +13,7 @@ import (
 
 func main() {
 	libRepository := library.NewRepositoryGorm()
-	libService := library.NewService(libRepository, openlibrary.NewHttpClient(&http.Client{}, "http://openlibrary.org"), *cache.NewMemoryCache(cache.WithThreaded(false)))
+	libService := library.NewService(libRepository, openlibrary.NewHttpClient(&http.Client{}, "http://openlibrary.org"), cache.NewMemoryCache())
 	libHandler := library.NewHandler(libService)
 
 	r := mux.NewRouter()

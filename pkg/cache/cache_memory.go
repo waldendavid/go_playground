@@ -7,7 +7,7 @@ type Key string
 type Value interface{}
 
 type MemoryCache struct {
-	data     map[Key]Value
+	data     map[string]Value
 	threaded bool
 	lock     *sync.RWMutex
 }
@@ -18,17 +18,17 @@ func NewMemoryCache(options ...func(*MemoryCache)) *MemoryCache {
 		o(mc)
 	}
 	return &MemoryCache{
-		data: make(map[Key]Value),
+		data: make(map[string]Value),
 	}
 }
 
-func WithThreaded(t bool) func(*MemoryCache) {
+func WithThreaded() func(*MemoryCache) {
 	return func(mc *MemoryCache) {
-		mc.threaded = t
+		mc.threaded = true
 	}
 }
 
-func (mc *MemoryCache) Get(k Key) (Value, bool) {
+func (mc *MemoryCache) Get(k string) (any, bool) {
 	if mc.threaded {
 		//todo
 		mc.lock.RLock()
@@ -41,7 +41,7 @@ func (mc *MemoryCache) Get(k Key) (Value, bool) {
 	return value, true
 }
 
-func (mc *MemoryCache) Set(k Key, v Value) {
+func (mc *MemoryCache) Set(k string, v any) {
 	if mc.threaded {
 		//todo
 		mc.lock.Lock()
@@ -50,7 +50,7 @@ func (mc *MemoryCache) Set(k Key, v Value) {
 	mc.data[k] = v
 }
 
-func (mc *MemoryCache) Remove(k Key) {
+func (mc *MemoryCache) Remove(k string) {
 	if mc.threaded {
 		mc.lock.Lock()
 		defer mc.lock.Unlock()
