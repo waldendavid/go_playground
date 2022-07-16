@@ -3,6 +3,9 @@ package library
 import (
 	"context"
 
+	_ "sync"
+
+	"github.com/waldendavid/restapi/pkg/cache"
 	"github.com/waldendavid/restapi/pkg/openlibrary"
 	"gorm.io/gorm"
 )
@@ -34,16 +37,18 @@ type Author struct {
 	BookID    uint
 }
 
-func NewService(repo Repository, olClient openlibrary.Client) Service {
+func NewService(repo Repository, olClient openlibrary.Client, cache cache.MemoryCache) Service {
 	return &service{
 		repo:     repo,
 		olClient: olClient,
+		cache:    cache,
 	}
 }
 
 type service struct {
 	repo     Repository
 	olClient openlibrary.Client
+	cache    cache.MemoryCache
 }
 
 func (s *service) GetBooks(ctx context.Context) ([]Book, error) {

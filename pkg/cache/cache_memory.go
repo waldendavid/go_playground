@@ -9,7 +9,7 @@ type Value interface{}
 type MemoryCache struct {
 	data     map[Key]Value
 	threaded bool
-	lock     sync.RWMutex
+	lock     *sync.RWMutex
 }
 
 func NewMemoryCache(options ...func(*MemoryCache)) *MemoryCache {

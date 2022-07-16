@@ -6,13 +6,14 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/waldendavid/restapi/pkg/cache"
 	"github.com/waldendavid/restapi/pkg/library"
 	"github.com/waldendavid/restapi/pkg/openlibrary"
 )
 
 func main() {
 	libRepository := library.NewRepositoryGorm()
-	libService := library.NewService(libRepository, openlibrary.NewHttpClient(&http.Client{}, "http://openlibrary.org"))
+	libService := library.NewService(libRepository, openlibrary.NewHttpClient(&http.Client{}, "http://openlibrary.org"), *cache.NewMemoryCache(cache.WithThreaded(false)))
 	libHandler := library.NewHandler(libService)
 
 	r := mux.NewRouter()
