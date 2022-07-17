@@ -9,7 +9,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func NewHandler(service Library) Handler {
+func NewHandler(service Service) Handler {
 	return &handler{service: service}
 }
 
@@ -22,7 +22,7 @@ type Handler interface {
 }
 
 type handler struct {
-	service Library
+	service Service
 }
 
 func (h *handler) GetBooks() http.HandlerFunc {

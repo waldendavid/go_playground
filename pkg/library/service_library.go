@@ -4,9 +4,12 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/waldendavid/restapi/pkg/cache"
+	"github.com/waldendavid/restapi/pkg/openlibrary"
 	"gorm.io/gorm"
 )
 
+// TODO
 type BookDTO struct {
 	ID     string  `json:"id"`
 	Isbn   string  `json:"isbn"`
@@ -33,72 +36,52 @@ type Author struct {
 	BookID    uint
 }
 
-func NewService(db *gorm.DB) Library {
-	// Migrate the schema: Author and Book
-	db.AutoMigrate(&Author{})
-	db.AutoMigrate(&Book{})
-	db.Create(&Book{Isbn: "44778854", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}})
-	db.Create(&Book{Isbn: "3987654", Title: "Book Two", Author: &Author{Firstname: "Steve", Lastname: "Smith"}})
-	return &service{db: db}
+func NewService(repo Repository, olClient openlibrary.Client, cache cache.Cache) Service {
+	return &service{
+		repo:     repo,
+		olClient: olClient,
+		cache:    cache,
+	}
 }
 
 type service struct {
-	db *gorm.DB
+	repo     Repository
+	olClient openlibrary.Client
+	cache    cache.Cache
 }
 
 func (s *service) GetBooks(ctx context.Context) ([]Book, error) {
-	var books []Book
-	result := s.db.Find(&books)
-	if result.Error != nil {
-
-		return nil, fmt.Errorf("GetBooks: %v", result.Error)
-	}
-	return books, nil
+	return s.repo.GetBooks(ctx)
 }
 
 func (s *service) GetBook(ctx context.Context, id string) (Book, error) {
-	book := Book{}
-	result := s.db.First(&book, id)
-	if result.Error != nil {
-		return Book{}, fmt.Errorf("GetBook: %v", result.Error)
-	}
 
-	return book, nil
+	return s.repo.GetBook(ctx, id)
 }
 
 func (s *service) CreateBook(ctx context.Context, book Book) (Book, error) {
-	result := s.db.Create(&book)
-	if result.Error != nil {
-
-		return Book{}, fmt.Errorf("CreateBook: %v", result.Error)
+	cb, inCache := s.cache.Get(book.Title)
+	if inCache {
+		fmt.Println("In Cache")
+		return cb.(Book), nil
 	}
-	return book, nil
+	clires, err := s.olClient.Search(ctx, openlibrary.SearchRequest{Title: book.Title})
+	if err != nil {
+		return Book{}, fmt.Errorf("GetBook: %v", err)
+
+	}
+	//TODO book zgodnie z danymi z res
+	var b Book
+	t := clires.Docs[len(clires.Docs)-1].Title
+	b.Title = t
+	s.cache.Set(book.Title, b)
+	return s.repo.CreateBook(ctx, b)
 }
 
 func (s *service) UpdateBook(ctx context.Context, b Book, id string) (Book, error) {
-	book := Book{}
-	result := s.db.First(&book, id)
-	if result.Error != nil {
-
-		return Book{}, fmt.Errorf("UpdateBook: %v", result.Error)
-	}
-
-	book.Isbn = b.Isbn
-	book.Title = b.Title
-	//todo itd....
-	result = s.db.Save(&book) //variable shadowing
-	if result.Error != nil {
-
-		return Book{}, fmt.Errorf("UpdateBook: %v", result.Error)
-	}
-	return book, nil
+	return s.repo.UpdateBook(ctx, b, id)
 }
 
 func (s *service) DeleteBook(ctx context.Context, id string) error {
-	result := s.db.Delete(&Book{}, id)
-	if result.Error != nil {
-
-		return fmt.Errorf("DeleteBook: %v", result.Error)
-	}
-	return nil
+	return s.repo.DeleteBook(ctx, id)
 }

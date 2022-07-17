@@ -6,19 +6,14 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/waldendavid/restapi/pkg/cache"
 	"github.com/waldendavid/restapi/pkg/library"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"github.com/waldendavid/restapi/pkg/openlibrary"
 )
 
 func main() {
-	dsn := "host=localhost user=postgres password=secret dbname=postgres port=5432 sslmode=disable"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	libService := library.NewService(db)
+	libRepository := library.NewRepositoryGorm()
+	libService := library.NewService(libRepository, openlibrary.NewHttpClient(&http.Client{}, "http://openlibrary.org"), cache.NewMemoryCache())
 	libHandler := library.NewHandler(libService)
 
 	r := mux.NewRouter()
