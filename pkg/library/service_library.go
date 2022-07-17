@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	//_ "sync"
-
 	"github.com/waldendavid/restapi/pkg/cache"
 	"github.com/waldendavid/restapi/pkg/openlibrary"
 	"gorm.io/gorm"
@@ -62,29 +60,30 @@ func (s *service) GetBook(ctx context.Context, id string) (Book, error) {
 }
 
 func (s *service) CreateBook(ctx context.Context, book Book) (Book, error) {
-	// tutaj get po tytule i sprawdzenie czy jest w bazie
-	// res, err := s.olClient.Search(ctx, openlibrary.SearchRequest{Title: book.Title})
-	// TODO zmienić kolejność, createBook na koniec wraz z zapisanie do cachea
-	// if book.Title == "" {
-	// }
 	cb, inCache := s.cache.Get(book.Title)
 	if inCache {
+		fmt.Println("In Cache")
 		return cb.(Book), nil
 	}
 	dbb, err := s.repo.GetBookByTitle(ctx, book.Title)
 	if err == nil {
+		fmt.Println("To Cache")
 		s.cache.Set(book.Title, dbb)
 		return dbb, nil
 	}
 	clires, err := s.olClient.Search(ctx, openlibrary.SearchRequest{Title: book.Title})
-	if err == nil {
-		//TODO book zgodnie z danymi z res
-		var b Book
-		b.Title = clires.Docs[len(clires.Docs)-1].Title
-		s.cache.Set(book.Title, b)
-		return s.repo.CreateBook(ctx, b)
+	if err != nil {
+		return Book{}, fmt.Errorf("GetBook: %v", err)
+
 	}
-	return Book{}, fmt.Errorf("GetBook: %v", err)
+	//TODO book zgodnie z danymi z res
+	var b Book
+	fmt.Println("From external api and cache")
+	t := clires.Docs[len(clires.Docs)-1].Title
+	b.Title = t
+	fmt.Println(t)
+	s.cache.Set(book.Title, b)
+	return s.repo.CreateBook(ctx, b)
 }
 
 func (s *service) UpdateBook(ctx context.Context, b Book, id string) (Book, error) {

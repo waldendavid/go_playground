@@ -17,8 +17,9 @@ func NewRepositoryGorm() Repository {
 	}
 	db.AutoMigrate(&Author{})
 	db.AutoMigrate(&Book{})
-	db.Create(&Book{Isbn: "44778854", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}})
-	db.Create(&Book{Isbn: "3987654", Title: "Book Two", Author: &Author{Firstname: "Steve", Lastname: "Smith"}})
+	// TODO Each time the application is launched, the same data is resubmitted to the database.
+	db.Create(&Book{Isbn: "44778854", Title: "Vader", Author: &Author{Firstname: "John", Lastname: "Doe"}})
+	db.Create(&Book{Isbn: "3987654", Title: "Voldemort", Author: &Author{Firstname: "Steve", Lastname: "Smith"}})
 	return &repository{db: db}
 }
 
