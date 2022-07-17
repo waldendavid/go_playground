@@ -65,12 +65,6 @@ func (s *service) CreateBook(ctx context.Context, book Book) (Book, error) {
 		fmt.Println("In Cache")
 		return cb.(Book), nil
 	}
-	dbb, err := s.repo.GetBookByTitle(ctx, book.Title)
-	if err == nil {
-		fmt.Println("To Cache")
-		s.cache.Set(book.Title, dbb)
-		return dbb, nil
-	}
 	clires, err := s.olClient.Search(ctx, openlibrary.SearchRequest{Title: book.Title})
 	if err != nil {
 		return Book{}, fmt.Errorf("GetBook: %v", err)
@@ -78,10 +72,8 @@ func (s *service) CreateBook(ctx context.Context, book Book) (Book, error) {
 	}
 	//TODO book zgodnie z danymi z res
 	var b Book
-	fmt.Println("From external api and cache")
 	t := clires.Docs[len(clires.Docs)-1].Title
 	b.Title = t
-	fmt.Println(t)
 	s.cache.Set(book.Title, b)
 	return s.repo.CreateBook(ctx, b)
 }
