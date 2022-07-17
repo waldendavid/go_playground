@@ -3,7 +3,7 @@ The application was created to learn the Go programming language. The first stag
 * [Standard Go Project Layout](https://github.com/golang-standards/project-layout).
 * Connection with database (Postgresql).
 * Gorilla.
-* Layers (like interfaces, implementations).
+* Layers (handlers, services, repositories).
 * Unit tests.
 * Independent data sources (db and external api).
 * Cache.
