@@ -2,6 +2,7 @@
 The application was created to learn the Go programming language. The first stage was to create a simple application. The next stages were to introduce extensions such as:
 * [Standard Go Project Layout](https://github.com/golang-standards/project-layout).
 * Connection with database (Postgresql).
+* GORM.
 * Gorilla.
 * Layers (handlers, services, repositories).
 * Unit tests.
