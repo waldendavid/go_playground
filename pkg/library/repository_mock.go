@@ -78,6 +78,21 @@ func (mr *MockRepositoryMockRecorder) GetBook(ctx, id interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBook", reflect.TypeOf((*MockRepository)(nil).GetBook), ctx, id)
 }
 
+// GetBookByTitle mocks base method.
+func (m *MockRepository) GetBookByTitle(ctx context.Context, title string) (Book, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetBookByTitle", ctx, title)
+	ret0, _ := ret[0].(Book)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetBookByTitle indicates an expected call of GetBookByTitle.
+func (mr *MockRepositoryMockRecorder) GetBookByTitle(ctx, title interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBookByTitle", reflect.TypeOf((*MockRepository)(nil).GetBookByTitle), ctx, title)
+}
+
 // GetBooks mocks base method.
 func (m *MockRepository) GetBooks(ctx context.Context) ([]Book, error) {
 	m.ctrl.T.Helper()

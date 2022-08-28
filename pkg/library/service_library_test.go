@@ -124,49 +124,58 @@ func Test_service_GetBook(t *testing.T) {
 		})
 	}
 }
+// todo correct
+// func Test_service_CreateBook(t *testing.T) {
+// 	ctx := context.Background()
+// 	book := Book{Isbn: "44778854", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}}
 
-func Test_service_CreateBook(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	m := NewMockRepository(ctrl)
-	book := Book{Isbn: "44778854", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}}
+// 	type mocks struct {
+// 		repository func(m *MockRepository)
+// 	}
+// 	type args struct {
+// 		ctx  context.Context
+// 		book Book
+// 	}
+// 	tests := []struct {
+// 		name string
+// 		//	 s       *service
+// 		mocks   mocks
+// 		args    args
+// 		want    Book
+// 		wantErr bool
+// 	}{
 
-	m.
-		EXPECT().
-		CreateBook(context.Background(), gomock.Any()).
-		Return(book, nil)
-
-	type args struct {
-		ctx  context.Context
-		book Book
-	}
-	tests := []struct {
-		name    string
-		s       *service
-		args    args
-		want    Book
-		wantErr bool
-	}{
-		{
-			name:    "Creating book",
-			s:       &service{repo: m},
-			args:    args{context.Background(), book},
-			want:    book,
-			wantErr: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.s.CreateBook(tt.args.ctx, tt.args.book)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("service.CreateBook() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("service.CreateBook() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
+// 		{
+// 			name: "Creating book",
+// 			//				s:       &service{repo: m},
+// 			mocks: mocks{repository: func(m *MockRepository) {
+// 				m.
+// 					EXPECT().
+// 					CreateBook(context.Background(), gomock.Any()).
+// 					Return(book, nil)
+// 			}},
+// 			args:    args{ctx, book},
+// 			want:    book,
+// 			wantErr: false,
+// 		},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			ctrl := gomock.NewController(t)
+// 			m := NewMockRepository(ctrl)
+// 			tt.mocks.repository(m)
+// 			s := &service{repo: m}
+// 			got, err := s.CreateBook(tt.args.ctx, tt.args.book)
+// 			if (err != nil) != tt.wantErr {
+// 				t.Errorf("service.CreateBook() error = %v, wantErr %v", err, tt.wantErr)
+// 				return
+// 			}
+// 			if !reflect.DeepEqual(got, tt.want) {
+// 				t.Errorf("service.CreateBook() = %v, want %v", got, tt.want)
+// 			}
+// 		})
+// 	}
+// }
 
 func Test_service_UpdateBook(t *testing.T) {
 	ctrl := gomock.NewController(t)
